@@ -1,33 +1,54 @@
-
 include ../makefiles/Makefile.defs
 
-COMMON_FILES=dummy.o common.o
+COMMON_FILES = dummy.o common.o
+BIN_DIR = ../bin/$(COMPILER)
+libs = -lm
 
-BIN_DIR=../bin/$(COMPILER)
-
-libs=-lm
-
-all : $(BIN_DIR)/tsvc_vec $(BIN_DIR)/tsvc_novec
-
-$(BIN_DIR)/tsvc_% : tsvc_%.o $(COMMON_FILES)
-	@mkdir -p $(BIN_DIR)
-	$(CC) $^ $(libs) -o $@$(SUFFIX)
-
-%_novec.o:%.c .FORCE
-	$(CC) $(flags) $(novecflags) -c -o $@ $<
-
-%_vec.o:%.c .FORCE
-	$(CC) $(flags) $(vecflags) -c -o $@ $<
-
-# Compiled with IEEE math flags to make initialisation/checksum calculations more reproducable
-# Be wary that PGI doesn't respect IEEE properly with vectorisation
-%.o:%.c .FORCE
-	$(CC) $(flags) $(vecflags) $(ieee_math_flags) -c -o $@ $<
-
-.PHONY: .FORCE clean
-.FORCE:
+# Default target builds everything
+#all: $(BIN_DIR)/benchmark_novec $(BIN_DIR)/benchmark_vec $(BIN_DIR)/benchmark_llm_vec
+benchmark_novec: $(BIN_DIR)/benchmark_novec
+	@true
+benchmark_vec: $(BIN_DIR)/benchmark_vec
+	@true
+benchmark_llm_vec: $(BIN_DIR)/benchmark_llm_vec
 	@true
 
-clean :
-	rm -f *.o *.s
+# Rule to build benchmark_novec binary
+$(BIN_DIR)/benchmark_novec: benchmark_novec.o driver.o $(COMMON_FILES)
+	@mkdir -p $(BIN_DIR)
+	$(CC) $^ $(libs) -o $@
 
+# Rule to build benchmark_vec binary
+$(BIN_DIR)/benchmark_vec: benchmark_vec.o driver.o $(COMMON_FILES)
+	@mkdir -p $(BIN_DIR)
+	$(CC) $^ $(libs) -o $@
+
+# Rule to build benchmark_llm_vec binary
+$(BIN_DIR)/benchmark_llm_vec: benchmark_llm_vec.o driver.o $(COMMON_FILES)
+	@mkdir -p $(BIN_DIR)
+	$(CC) $^ $(libs) -o $@
+
+# Compile rules for benchmark.c and driver.c
+benchmark_novec.o: benchmark.c
+	$(CC) $(flags) $(novecflags) -c -o $@ $<
+
+benchmark_vec.o: benchmark.c
+	$(CC) $(flags) $(vecflags) -c -o $@ $<
+
+benchmark_llm_vec.o: benchmark_llm_vec.c
+	$(CC) $(flags) $(novecflags) -c -o $@ $<
+
+driver.o: driver.c
+	$(CC) $(flags) -c -o $@ $<
+
+# Compile rules for common files
+dummy.o: dummy.c
+	$(CC) $(flags) -c -o $@ $<
+
+common.o: common.c
+	$(CC) $(flags) -c -o $@ $<
+
+.PHONY: clean
+clean:
+	rm -f *.o
+	rm -f $(BIN_DIR)/*

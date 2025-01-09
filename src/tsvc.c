@@ -1,4 +1,3 @@
-
 /*
  * This is an executable test containing a number of loops to measure
  * the performance of a compiler. Arrays' length is LEN_1D by default

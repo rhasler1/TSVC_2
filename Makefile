@@ -1,22 +1,25 @@
-
 COMPILER=GNU
+BENCHMARK=
 
 ifndef COMPILER
 $(error No compiler specified!)
 endif
 
+ifndef BENCHMARK
+$(error No benchmark specified!)
+endif
+
 SRC_DIR=./src
 
-all:
-	@$(MAKE) -C $(SRC_DIR) COMPILER=$(COMPILER)                NO_OMP=1 SUFFIX=_default
-	@$(MAKE) -C $(SRC_DIR) COMPILER=$(COMPILER) FAST_MATH=1    NO_OMP=1 SUFFIX=_relaxed
-	@$(MAKE) -C $(SRC_DIR) COMPILER=$(COMPILER) PRECISE_MATH=1 NO_OMP=1 SUFFIX=_precise
 
-benchmark:
-	@$(MAKE) -C $(SRC_DIR) COMPILER=$(COMPILER) benchmark
+build_benchmark_novec:
+	@$(MAKE) -C $(SRC_DIR) COMPILER=$(COMPILER) BENCHMARK=$(BENCHMARK) $(BENCHMARK)_novec
 
-benchmark_llm_vec:
-	@$(MAKE) -C $(SRC_DIR) COMPILER=$(COMPILER) benchmark_llm_vec
+build_benchmark_vec:
+	@$(MAKE) -C $(SRC_DIR) COMPILER=$(COMPILER) BENCHMARK=$(BENCHMARK) $(BENCHMARK)_vec
+
+build_benchmark_llm_vec:
+	@$(MAKE) -C $(SRC_DIR) COMPILER=$(COMPILER) BENCHMARK=$(BENCHMARK) $(BENCHMARK)_llm_vec
 
 .PHONY: clean
 clean:
