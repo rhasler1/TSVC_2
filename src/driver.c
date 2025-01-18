@@ -3,6 +3,13 @@
 
 int main()
 {
-    time_function(&s273, NULL);
+    int n1 = 1;
+    int n3 = 1;
+    int* ip;
+    real_t s1,s2;
+
+    init(&ip, &s1, &s2);
+    
+    time_function(&s000, NULL);
     return 0;
 }

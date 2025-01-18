@@ -2,9 +2,9 @@
 CC=gcc -std=c99
 CXX=g++
 FC=gfortran
-flags = -O3 -fstrict-aliasing -fivopts
-vecflags = -ftree-vectorize 
-novecflags = -fno-tree-vectorize
+flags = -O3 -mavx2
+vecflags = -W -ftree-vectorizer-verbose=3 -ftree-vectorize -fopt-info-vec-optimized
+novecflags =
 omp_flags=-fopenmp
 
 ifdef VEC_REPORT

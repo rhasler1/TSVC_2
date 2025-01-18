@@ -25,7 +25,7 @@ $(BIN_DIR)/$(BENCHMARK)_%: $(BENCHMARK)_%.o $(COMMON_FILES)
 	$(CC) $(flags) $(novecflags) -c -o $@ $<
 
 %_llm_vec.o: benchmark_$(BENCHMARK)_llm_vec.c
-	$(CC) $(flags) $(novecflags) -c -o $@ $<
+	$(CC) $(flags) $(vecflags) -c -o $@ $<
 
 %_vec.o: benchmark_$(BENCHMARK).c
 	$(CC) $(flags) $(vecflags) -c -o $@ $<
