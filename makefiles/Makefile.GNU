@@ -1,5 +1,4 @@
-
-CC=gcc -std=c99
+CC=gcc
 CXX=g++
 FC=gfortran
 flags = -O3 -mavx2
